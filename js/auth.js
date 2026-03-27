@@ -6,6 +6,10 @@ import { findUserByCredentials } from './storage.js';
 
 const SESSION_KEY = 'tm_session';
 
+function emit(name, detail = {}) {
+    document.dispatchEvent(new CustomEvent(name, { detail }));
+}
+
 // ── Sesión ─────────────────────────────────────────────────────────────────
 
 /**
@@ -24,6 +28,7 @@ function login(username, password) {
     const user = findUserByCredentials(username, password);
     if (!user) throw new Error('Usuario o contraseña incorrectos.');
     sessionStorage.setItem(SESSION_KEY, JSON.stringify(user));
+    emit('auth:login', { user });
     return user;
 }
 
@@ -32,6 +37,7 @@ function login(username, password) {
  */
 function logout() {
     sessionStorage.removeItem(SESSION_KEY);
+    emit('auth:logout');
     window.location.reload();
 }
 

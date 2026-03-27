@@ -196,12 +196,11 @@ taskForm.addEventListener('submit', (e) => {
         : getSession().id;
 
     try {
-        createTask({ title, due_date, user_id });
+        createTask({ title, due_date, user_id }); // dispara task:created → dom.js re-renderiza
         clearError(taskError);
         taskForm.reset();
         document.getElementById('task-due-date').min = new Date().toISOString().split('T')[0];
         closeModal(modalTask);
-        renderTasks();
     } catch (err) {
         showError(taskError, err.message);
     }
@@ -225,15 +224,21 @@ userForm.addEventListener('submit', (e) => {
     }
 
     try {
-        createUser({ username, password, role });
+        createUser({ username, password, role }); // dispara user:created → dom.js actualiza vista
         clearError(userError);
         userForm.reset();
         closeModal(modalUser);
-        populateAssignSelect();
-        renderUserFilter();
     } catch (err) {
         showError(userError, err.message);
     }
+});
+
+// ── Suscripción a Custom Events ────────────────────────────────────────────
+
+// Al crear un usuario, los selects de asignación y filtro deben actualizarse
+document.addEventListener('user:created', () => {
+    populateAssignSelect();
+    renderUserFilter();
 });
 
 // ── Arranque ───────────────────────────────────────────────────────────────

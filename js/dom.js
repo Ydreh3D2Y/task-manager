@@ -121,21 +121,28 @@ function renderUserFilter() {
     filterSelect.addEventListener('change', renderTasks);
 }
 
-// ── Eventos delegados ──────────────────────────────────────────────────────
+// ── Eventos delegados (acciones del usuario en la lista) ───────────────────
 
 taskList.addEventListener('click', (e) => {
     const id = parseInt(e.target.dataset.id, 10);
     if (!id) return;
 
-    if (e.target.classList.contains('btn-toggle')) {
-        toggleTaskStatus(id);
-        renderTasks();
-    }
+    // Solo llama la mutación — el re-render lo dispara el Custom Event
+    if (e.target.classList.contains('btn-toggle')) toggleTaskStatus(id);
+    if (e.target.classList.contains('btn-delete'))  deleteTask(id);
+});
 
-    if (e.target.classList.contains('btn-delete')) {
-        deleteTask(id);
-        renderTasks();
-    }
+// ── Suscripción a Custom Events ────────────────────────────────────────────
+
+// Tareas: cualquier cambio re-renderiza la lista
+document.addEventListener('task:created', () => renderTasks());
+document.addEventListener('task:updated', () => renderTasks());
+document.addEventListener('task:deleted', () => renderTasks());
+
+// Usuario creado: actualiza la vista de usuarios si está activa
+document.addEventListener('user:created', () => {
+    const viewUsers = document.getElementById('view-users');
+    if (!viewUsers.classList.contains('hidden')) renderUsers();
 });
 
 // ── Vista de Usuarios ──────────────────────────────────────────────────────
