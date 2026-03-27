@@ -36,7 +36,18 @@
                 <button id="logout-btn">Cerrar sesión</button>
             </div>
         </header>
-        <main class="app-main"></main>
+        <main class="app-main">
+
+            <!-- Filtro por usuario (solo admin) -->
+            <div id="filter-section" class="admin-only hidden">
+                <label for="filter-user">Filtrar por usuario:</label>
+                <select id="filter-user"></select>
+            </div>
+
+            <!-- Lista de tareas -->
+            <ul id="task-list"></ul>
+
+        </main>
     </section>
 
     <script type="module" src="js/app.js"></script>
