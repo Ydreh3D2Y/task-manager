@@ -8,103 +8,182 @@
 </head>
 <body>
 
-    <!-- Vista: Login -->
+    <!-- ── Vista: Login ──────────────────────────────────── -->
     <section id="login-view">
         <div class="login-card">
-            <h1>Task Manager</h1>
+            <div class="login-brand">
+                <span class="brand-icon">✓</span>
+                <h1>TaskManager</h1>
+            </div>
+            <p class="login-subtitle">Inicia sesión para continuar</p>
             <form id="login-form">
                 <div class="form-group">
                     <label for="login-username">Usuario</label>
-                    <input type="text" id="login-username" required />
+                    <input type="text" id="login-username" placeholder="Tu usuario" required />
                 </div>
                 <div class="form-group">
                     <label for="login-password">Contraseña</label>
-                    <input type="password" id="login-password" required />
+                    <input type="password" id="login-password" placeholder="Tu contraseña" required />
                 </div>
                 <p id="login-error" class="error-msg hidden"></p>
-                <button type="submit">Ingresar</button>
+                <button type="submit" class="btn-primary">Ingresar</button>
             </form>
         </div>
     </section>
 
-    <!-- Vista: Dashboard (se muestra tras el login) -->
-    <section id="dashboard-view" class="hidden">
-        <header class="app-header">
-            <h2>Task Manager</h2>
-            <div class="header-actions">
-                <span id="current-user-label"></span>
-                <button id="logout-btn">Cerrar sesión</button>
+    <!-- ── Vista: Dashboard ──────────────────────────────── -->
+    <div id="dashboard-view" class="hidden">
+
+        <!-- Sidebar izquierdo -->
+        <aside class="sidebar" id="sidebar">
+            <!-- Click en el brand colapsa/expande el sidebar -->
+            <div class="sidebar-brand" id="sidebar-toggle" title="Colapsar menú">
+                <span class="brand-icon">✓</span>
+                <span class="brand-name">TaskManager</span>
             </div>
-        </header>
-        <main class="app-main">
 
-            <!-- Sidebar: formularios -->
-            <aside class="sidebar">
+            <nav class="sidebar-nav">
+                <span class="nav-label">Menú</span>
+                <a class="nav-item active" href="#" id="nav-my-tasks" title="Mis Tareas">
+                    <span class="nav-icon nav-icon--tasks"></span>
+                    <span class="nav-text">Mis Tareas</span>
+                </a>
+                <!-- Solo admin -->
+                <a class="nav-item admin-only hidden" href="#" id="nav-all-tasks" title="Todas las Tareas">
+                    <span class="nav-icon nav-icon--tasks"></span>
+                    <span class="nav-text">Todas las Tareas</span>
+                </a>
+                <a class="nav-item admin-only hidden" href="#" id="nav-users" title="Usuarios">
+                    <span class="nav-icon nav-icon--users"></span>
+                    <span class="nav-text">Usuarios</span>
+                </a>
+            </nav>
 
-                <!-- Formulario: Nueva tarea -->
-                <section class="form-section">
-                    <h3>Nueva Tarea</h3>
-                    <form id="task-form">
-                        <div class="form-group">
-                            <label for="task-title">Título</label>
-                            <input type="text" id="task-title" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="task-due-date">Fecha de vencimiento</label>
-                            <input type="date" id="task-due-date" required />
-                        </div>
-                        <!-- Solo visible para admin: asignar a otro usuario -->
-                        <div class="form-group admin-only hidden">
-                            <label for="task-assign-user">Asignar a</label>
-                            <select id="task-assign-user"></select>
-                        </div>
-                        <p id="task-error" class="error-msg hidden"></p>
-                        <button type="submit">Agregar Tarea</button>
-                    </form>
-                </section>
+            <div class="sidebar-footer">
+                <div class="user-menu" id="user-menu">
+                    <div class="user-avatar" id="user-avatar"></div>
+                    <div class="user-info">
+                        <span id="current-user-label"></span>
+                        <span id="current-user-role"></span>
+                    </div>
+                    <div class="user-dropdown hidden" id="user-dropdown">
+                        <button id="logout-btn">Cerrar sesión</button>
+                    </div>
+                </div>
+            </div>
+        </aside>
 
-                <!-- Formulario: Nuevo usuario (solo admin) -->
-                <section class="form-section admin-only hidden">
-                    <h3>Nuevo Usuario</h3>
-                    <form id="user-form">
-                        <div class="form-group">
-                            <label for="new-username">Usuario</label>
-                            <input type="text" id="new-username" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="new-password">Contraseña</label>
-                            <input type="password" id="new-password" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="new-role">Rol</label>
-                            <select id="new-role">
-                                <option value="user">Usuario Normal</option>
-                                <option value="admin">Administrador</option>
-                            </select>
-                        </div>
-                        <p id="user-error" class="error-msg hidden"></p>
-                        <button type="submit">Crear Usuario</button>
-                    </form>
-                </section>
+        <!-- Contenido principal -->
+        <main class="main-content">
 
-            </aside>
+            <!-- ── Vista: Tareas ── -->
+            <div id="view-tasks">
+                <header class="panel-header">
+                    <div class="panel-title-wrap">
+                        <h2 id="panel-title">Panel de Control: Mis Tareas</h2>
+                        <p id="panel-subtitle" class="panel-subtitle"></p>
+                    </div>
+                    <button class="btn-primary" id="btn-new-task">+ Nueva Tarea</button>
+                </header>
 
-            <!-- Panel principal: filtro + lista -->
-            <section class="task-board">
-
-                <!-- Filtro por usuario (solo admin) -->
-                <div id="filter-section" class="admin-only hidden">
+                <div id="filter-section" class="filter-bar admin-only hidden">
                     <label for="filter-user">Filtrar por usuario:</label>
                     <select id="filter-user"></select>
                 </div>
 
-                <!-- Lista de tareas -->
-                <ul id="task-list"></ul>
+                <div class="stats-row">
+                    <div class="stat-card">
+                        <span class="stat-value" id="stat-total">0</span>
+                        <span class="stat-label">Total</span>
+                    </div>
+                    <div class="stat-card stat-pending">
+                        <span class="stat-value" id="stat-pending">0</span>
+                        <span class="stat-label">Pendientes</span>
+                    </div>
+                    <div class="stat-card stat-overdue">
+                        <span class="stat-value" id="stat-overdue">0</span>
+                        <span class="stat-label">Vencidas</span>
+                    </div>
+                    <div class="stat-card stat-done">
+                        <span class="stat-value" id="stat-done">0</span>
+                        <span class="stat-label">Completadas</span>
+                    </div>
+                </div>
 
-            </section>
+                <ul id="task-list"></ul>
+            </div>
+
+            <!-- ── Vista: Usuarios (solo admin) ── -->
+            <div id="view-users" class="hidden">
+                <header class="panel-header">
+                    <div class="panel-title-wrap">
+                        <h2>Gestión de Usuarios</h2>
+                        <p class="panel-subtitle">Resumen de actividad por usuario del sistema.</p>
+                    </div>
+                    <button class="btn-primary" id="btn-new-user">+ Nuevo Usuario</button>
+                </header>
+
+                <ul id="user-list"></ul>
+            </div>
 
         </main>
-    </section>
+
+    </div>
+
+    <!-- ── Modal: Nueva Tarea ─────────────────────────────── -->
+    <div class="modal-overlay hidden" id="modal-task">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Nueva Tarea</h3>
+                <button class="modal-close" id="modal-task-close">✕</button>
+            </div>
+            <form id="task-form">
+                <div class="form-group">
+                    <label for="task-title">Título</label>
+                    <input type="text" id="task-title" placeholder="Nombre de la tarea" required />
+                </div>
+                <div class="form-group">
+                    <label for="task-due-date">Fecha de vencimiento</label>
+                    <input type="date" id="task-due-date" required />
+                </div>
+                <div class="form-group admin-only hidden">
+                    <label for="task-assign-user">Asignar a</label>
+                    <select id="task-assign-user"></select>
+                </div>
+                <p id="task-error" class="error-msg hidden"></p>
+                <button type="submit" class="btn-primary">Agregar Tarea</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- ── Modal: Nuevo Usuario (admin) ──────────────────── -->
+    <div class="modal-overlay hidden" id="modal-user">
+        <div class="modal">
+            <div class="modal-header">
+                <h3>Nuevo Usuario</h3>
+                <button class="modal-close" id="modal-user-close">✕</button>
+            </div>
+            <form id="user-form">
+                <div class="form-group">
+                    <label for="new-username">Usuario</label>
+                    <input type="text" id="new-username" placeholder="Nombre de usuario" required />
+                </div>
+                <div class="form-group">
+                    <label for="new-password">Contraseña</label>
+                    <input type="password" id="new-password" placeholder="Mínimo 6 caracteres" required />
+                </div>
+                <div class="form-group">
+                    <label for="new-role">Rol</label>
+                    <select id="new-role">
+                        <option value="user">Usuario Normal</option>
+                        <option value="admin">Administrador</option>
+                    </select>
+                </div>
+                <p id="user-error" class="error-msg hidden"></p>
+                <button type="submit" class="btn-primary">Crear Usuario</button>
+            </form>
+        </div>
+    </div>
 
     <script type="module" src="js/app.js"></script>
 </body>
