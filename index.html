@@ -38,14 +38,70 @@
         </header>
         <main class="app-main">
 
-            <!-- Filtro por usuario (solo admin) -->
-            <div id="filter-section" class="admin-only hidden">
-                <label for="filter-user">Filtrar por usuario:</label>
-                <select id="filter-user"></select>
-            </div>
+            <!-- Sidebar: formularios -->
+            <aside class="sidebar">
 
-            <!-- Lista de tareas -->
-            <ul id="task-list"></ul>
+                <!-- Formulario: Nueva tarea -->
+                <section class="form-section">
+                    <h3>Nueva Tarea</h3>
+                    <form id="task-form">
+                        <div class="form-group">
+                            <label for="task-title">Título</label>
+                            <input type="text" id="task-title" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="task-due-date">Fecha de vencimiento</label>
+                            <input type="date" id="task-due-date" required />
+                        </div>
+                        <!-- Solo visible para admin: asignar a otro usuario -->
+                        <div class="form-group admin-only hidden">
+                            <label for="task-assign-user">Asignar a</label>
+                            <select id="task-assign-user"></select>
+                        </div>
+                        <p id="task-error" class="error-msg hidden"></p>
+                        <button type="submit">Agregar Tarea</button>
+                    </form>
+                </section>
+
+                <!-- Formulario: Nuevo usuario (solo admin) -->
+                <section class="form-section admin-only hidden">
+                    <h3>Nuevo Usuario</h3>
+                    <form id="user-form">
+                        <div class="form-group">
+                            <label for="new-username">Usuario</label>
+                            <input type="text" id="new-username" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="new-password">Contraseña</label>
+                            <input type="password" id="new-password" required />
+                        </div>
+                        <div class="form-group">
+                            <label for="new-role">Rol</label>
+                            <select id="new-role">
+                                <option value="user">Usuario Normal</option>
+                                <option value="admin">Administrador</option>
+                            </select>
+                        </div>
+                        <p id="user-error" class="error-msg hidden"></p>
+                        <button type="submit">Crear Usuario</button>
+                    </form>
+                </section>
+
+            </aside>
+
+            <!-- Panel principal: filtro + lista -->
+            <section class="task-board">
+
+                <!-- Filtro por usuario (solo admin) -->
+                <div id="filter-section" class="admin-only hidden">
+                    <label for="filter-user">Filtrar por usuario:</label>
+                    <select id="filter-user"></select>
+                </div>
+
+                <!-- Lista de tareas -->
+                <ul id="task-list"></ul>
+
+            </section>
 
         </main>
     </section>
