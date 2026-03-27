@@ -2,6 +2,12 @@
   Capa de persistencia usando localStorage.
  */
 
+// ── Bus de eventos ─────────────────────────────────────────────────────────
+
+function emit(name, detail = {}) {
+    document.dispatchEvent(new CustomEvent(name, { detail }));
+}
+
 const KEYS = {
     USERS: 'tm_users',
     TASKS: 'tm_tasks',
@@ -99,6 +105,7 @@ function createUser({ username, password, role }) {
     }
     const newUser = { id: nextUserId(), username, password, role };
     writeUsers([...users, newUser]);
+    emit('user:created', { user: { ...newUser, password: undefined } });
     return { ...newUser, password: undefined };
 }
 
@@ -140,6 +147,7 @@ function createTask({ title, due_date, user_id }) {
     };
 
     writeTasks([...readTasks(), newTask]);
+    emit('task:created', { task: newTask });
     return newTask;
 }
 
@@ -154,6 +162,7 @@ function toggleTaskStatus(taskId) {
 
     tasks[index].status = tasks[index].status === 'pending' ? 'completed' : 'pending';
     writeTasks(tasks);
+    emit('task:updated', { task: tasks[index] });
     return tasks[index];
 }
 
@@ -166,6 +175,7 @@ function deleteTask(taskId) {
     const filtered = tasks.filter(t => t.id !== taskId);
     if (filtered.length === tasks.length) return false;
     writeTasks(filtered);
+    emit('task:deleted', { taskId });
     return true;
 }
 
