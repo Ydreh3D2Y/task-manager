@@ -3,7 +3,8 @@
  */
 
 import { initStorage } from './storage.js';
-import { getSession, login, logout } from './auth.js';
+import { getSession, login, logout, isAdmin } from './auth.js';
+import { renderTasks, renderUserFilter } from './dom.js';
 
 initStorage();
 
@@ -13,11 +14,21 @@ const loginForm     = document.getElementById('login-form');
 const loginError    = document.getElementById('login-error');
 const logoutBtn     = document.getElementById('logout-btn');
 const userLabel     = document.getElementById('current-user-label');
+const filterSection = document.getElementById('filter-section');
 
 function showDashboard(user) {
     loginView.classList.add('hidden');
     dashboardView.classList.remove('hidden');
     userLabel.textContent = `${user.username} (${user.role})`;
+
+    // Mostrar filtro y elementos exclusivos de admin
+    if (isAdmin()) {
+        filterSection.classList.remove('hidden');
+        document.querySelectorAll('.admin-only').forEach(el => el.classList.remove('hidden'));
+    }
+
+    renderUserFilter();
+    renderTasks();
 }
 
 function showLogin() {
